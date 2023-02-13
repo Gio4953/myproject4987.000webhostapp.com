@@ -1,0 +1,94 @@
+body {
+    font-family: cursive;
+}
+
+#button-container .add-button:hover {
+    background-color: blue;
+}
+
+.mass-delete-button {
+    background-color: red;
+    font-family: cursive;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    margin-right: 0px;
+}
+
+#button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add-button {
+    
+    margin-right: 120px;
+    font-family: cursive;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 20px !important;
+    position: relative;
+}
+
+header:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+}
+
+.item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    margin: 10px;
+    position: relative;
+}
+.checkbox {
+    width: 15px;
+    height: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+    
+.checkbox.checked {
+    background-color: blue;
+}
+    
+.checkbox.checked:before {
+    content: "\2713";
+    color: white;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.items-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}
+    
+@media only screen and (max-width: 700px) {
+    .items-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}   
+@media only screen and (max-width: 400px) {
+    .items-container {
+        grid-template-columns: 1fr;
+    }
+}
