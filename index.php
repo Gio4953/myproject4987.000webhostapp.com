@@ -13,32 +13,20 @@
     <header>
         <h1 id="product-list-header">PRODUCT LIST</h1>
         <div id="button-container">
-            <button class="add-button button" onclick="window.location.href='add.php'">ADD</button>
+            <button class="add-button button"  onclick="window.location.href='add.php'">ADD</button>
         </div>
     </header>
     <div class="main">
         <?php
-        $host = "localhost";
-        $username = "sqluser";
-        $password = "password";
-        $dbname = "mybase";
-        
-        // Create a new connection
-        $conn = new mysqli($host, $username, $password, $dbname);
-        
-        // Check for connection errors
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+        ob_start();
+        include_once 'connection.php';
         $sql = "SELECT sku, name, price, size, weight, height, width, length FROM items";
         $result = $conn->query($sql);
         if (isset($_POST['save'])) {
-            // Get the data from the form
             $sku = $_POST['sku'];
             $name = $_POST['name'];
             $price = $_POST['price'];
-            $product_type = $_POST['product_type'];
-
+            $productType = $_POST['productType'];
             $size = '';
             $weight = '';
             $height = '';
@@ -46,55 +34,54 @@
             $length = '';
             $check_duplicate = mysqli_query($conn, "SELECT * FROM items WHERE SKU='$sku'");
             if (mysqli_num_rows($check_duplicate) > 0) {
-                header("Location:http://localhost/IMPORTANTONE/add.php");
+                header("Location:https://myproject4987.000webhostapp.com/index.php");
                 echo "Error: A product with SKU '$sku' already exists.";
                 @mysqli_query($conn, "INSERT INTO items (SKU, name, price) VALUES ('$sku', '$name', '$price')");
                 if (mysqli_errno($conn)) {
-                    // Handle the error
                 }
             }
-
-            if ($product_type === 'dvd') {
+            if ($productType === 'dvd') {
                 $size = $_POST['size'];
                 $sql = "INSERT INTO items (sku, name, price, size)
                 VALUES ('$sku', '$name', '$price', '$size')";
                 if (mysqli_query($conn, $sql)) {
-                    header("Location: http://localhost/IMPORTANTONE/index.php");
+                    header("Location: https://myproject4987.000webhostapp.com/index.php");
                     exit;
                 } else {
                     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                 }
-            } else if ($product_type === 'book') {
+            } else if ($productType === 'book') {
                 $weight = $_POST['weight'];
                 $sql = "INSERT INTO items (sku, name, price,  weight)
                 VALUES ('$sku', '$name', '$price', '$weight')";
                 if (mysqli_query($conn, $sql)) {
-                    header("Location: http://localhost/IMPORTANTONE/index.php");
+                    header("Location: https://myproject4987.000webhostapp.com/index.php");
                     exit;
                 } else {
                     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                 }
-            } else if ($product_type === 'furniture') {
+            } else if ($productType === 'furniture') {
                 $height = $_POST['height'];
                 $width = $_POST['width'];
                 $length = $_POST['length'];
                 $sql = "INSERT INTO items (sku, name, price,  height, width, length)
                 VALUES ('$sku', '$name', '$price','$height',  '$width', '$length')";
                 if (mysqli_query($conn, $sql)) {
-                    header("Location: http://localhost/IMPORTANTONE/index.php");
+                    header("Location: https://myproject4987.000webhostapp.com/index.php");
                     exit;
                 } else {
                     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                 }
             }
-        } ?>
+        }
+        ?>
         <form method="post">
             <div class='items-container'>
                 <?php
                 while ($row = mysqli_fetch_array($result)) {
                     echo "
          <div class='item'>
-            <input type='checkbox' class='delete-checkbox' name='checkbox[]' value='$row[sku]' id='$row[sku]'>
+            <input type='checkbox' text='delete-checkbox' class='delete-checkbox' name='checkbox[]' value='$row[sku]' id='$row[sku]'>
             <p>sku: $row[sku] </p>
             <p>Name: $row[name] </p>
             <p>Price: $ $row[price] </p>
@@ -106,20 +93,15 @@
                     if ($row['height'] > 0)
                         echo "Dimension: " . $row['height'] . " x " . $row['width'] . " x " . $row['length'];
                     echo "</p>
-         </div>
-         
-         ";
+         </div>";
                 }
                 ?>
                 <input type="submit" name="delete" value="MASS DELETE" class="mass-delete-button" id="delete-product-btn">
             </div>
         </form>
         <?php
-
         if (isset($_POST['delete'])) {
-            if (!isset($_POST['checkbox'])) {
-                echo '<p>Please select an item to delete...</p>';
-            } else {
+            if (isset($_POST['checkbox'])) {
                 $checkbox = $_POST['checkbox'];
                 $count = count($checkbox);
                 for ($i = 0; $i < $count; $i++) {
@@ -129,9 +111,13 @@
                 }
                 header("Location: {$_SERVER['PHP_SELF']}");
                 exit;
+            } else {
+                echo '<p>Please select an item to delete...</p>';
             }
         }
-        mysqli_close($conn); ?>
+        mysqli_close($conn);
+        ob_end_flush();
+        ?>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
